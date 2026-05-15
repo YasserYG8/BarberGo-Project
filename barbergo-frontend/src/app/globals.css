@@ -1,0 +1,338 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════
+   BarberGo — Dark Luxury Barbershop Theme
+   ═══════════════════════════════════════════ */
+
+@layer base {
+  :root {
+    /* ─── Surfaces ─── */
+    --background: 20 14% 4%;        /* #0C0A09  stone-950 */
+    --foreground: 60 9% 98%;        /* #FAFAF9  stone-50  */
+
+    --card: 20 14% 10%;             /* #1C1917  stone-900 */
+    --card-foreground: 60 9% 98%;
+
+    --popover: 20 14% 10%;
+    --popover-foreground: 60 9% 98%;
+
+    /* ─── Brand: Warm Gold ─── */
+    --primary: 38 92% 50%;          /* #D97706  amber-600 */
+    --primary-foreground: 20 14% 4%;
+
+    --secondary: 20 6% 15%;         /* stone-850 custom */
+    --secondary-foreground: 60 9% 98%;
+
+    --muted: 20 6% 15%;
+    --muted-foreground: 24 6% 63%;  /* #A8A29E  stone-400 */
+
+    --accent: 20 6% 20%;            /* stone-800 */
+    --accent-foreground: 60 9% 98%;
+
+    --destructive: 0 72% 51%;       /* #DC2626  red-600 */
+    --destructive-foreground: 60 9% 98%;
+
+    /* ─── Borders & Rings ─── */
+    --border: 24 10% 26%;           /* #44403C  stone-700 */
+    --input: 24 10% 26%;
+    --ring: 38 92% 50%;             /* gold ring */
+
+    --radius: 0.75rem;
+
+    /* ─── Semantic ─── */
+    --success: 142 71% 45%;         /* #16A34A  green-600 */
+    --warning: 38 92% 50%;          /* amber */
+    --info: 217 91% 60%;            /* blue-500 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body), system-ui, sans-serif;
+    color-scheme: dark;
+    line-height: 1.5;
+    background-image:
+      radial-gradient(circle at top left, hsl(38 92% 50% / 0.08), transparent 30%),
+      radial-gradient(circle at top right, hsl(32 72% 44% / 0.08), transparent 26%),
+      linear-gradient(180deg, hsl(24 18% 8%), hsl(20 14% 4%) 24%, hsl(20 14% 4%));
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), Georgia, serif;
+  }
+
+  /* ─── Custom Scrollbar ─── */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(20 14% 4%);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(24 10% 26%);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(24 6% 40%);
+  }
+
+  /* ─── Selection ─── */
+  ::selection {
+    background: hsl(38 92% 50% / 0.3);
+    color: hsl(60 9% 98%);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Utility Classes
+   ═══════════════════════════════════════════ */
+
+@layer utilities {
+  /* Grain texture overlay */
+  .grain::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* Gold glow for primary CTAs */
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(38 92% 50% / 0.15),
+                0 0 60px hsl(38 92% 50% / 0.05);
+  }
+
+  .glow-gold:hover {
+    box-shadow: 0 0 25px hsl(38 92% 50% / 0.25),
+                0 0 80px hsl(38 92% 50% / 0.1);
+  }
+
+  /* Glass effect */
+  .glass {
+    background: hsl(20 14% 10% / 0.8);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+  }
+
+  /* Text gradient - gold shimmer */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Subtle border glow */
+  .border-glow {
+    border: 1px solid hsl(38 92% 50% / 0.2);
+  }
+
+  .border-glow:hover {
+    border-color: hsl(38 92% 50% / 0.4);
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/80;
+  }
+
+  .luxury-panel {
+    background:
+      linear-gradient(180deg, hsl(24 9% 11% / 0.96), hsl(20 14% 8% / 0.96)),
+      hsl(20 14% 8%);
+    border: 1px solid hsl(30 12% 24% / 0.95);
+    box-shadow:
+      0 24px 60px hsl(0 0% 0% / 0.24),
+      inset 0 1px 0 hsl(38 40% 70% / 0.06);
+  }
+
+  .luxury-divider {
+    position: relative;
+  }
+
+  .luxury-divider::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(38 92% 50% / 0.32),
+      transparent
+    );
+  }
+
+  .soft-grid {
+    background-image:
+      linear-gradient(hsl(0 0% 100% / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(0 0% 100% / 0.03) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: linear-gradient(180deg, hsl(0 0% 0%) 35%, transparent 100%);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 20px hsl(38 92% 50% / 0.15); }
+  50% { box-shadow: 0 0 30px hsl(38 92% 50% / 0.3); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out forwards;
+  }
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(20 14% 10%) 0%,
+      hsl(20 6% 18%) 50%,
+      hsl(20 14% 10%) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  .animate-pulse-gold {
+    animation: pulse-gold 2s ease-in-out infinite;
+  }
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+  .animate-toast-in {
+    animation: toastSlideIn 0.3s ease-out forwards;
+  }
+  .animate-toast-out {
+    animation: toastSlideOut 0.2s ease-in forwards;
+  }
+
+  /* Stagger children — use on parent */
+  .stagger-children > * {
+    opacity: 0;
+    animation: slideUp 0.4s ease-out forwards;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 360ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+  .stagger-children > *:nth-child(9) { animation-delay: 480ms; }
+  .stagger-children > *:nth-child(10) { animation-delay: 540ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

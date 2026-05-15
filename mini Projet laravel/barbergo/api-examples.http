@@ -1,0 +1,263 @@
+### BarberGo API — example requests
+### Use with VS Code "REST Client" extension, or copy into Postman.
+### Start server: php artisan serve  →  base URL below includes /api prefix.
+
+@baseUrl = http://localhost:8000/api
+@token = REPLACE_WITH_ACCESS_TOKEN_FROM_LOGIN_OR_REGISTER
+
+###############################################################################
+# AUTH (no token)
+###############################################################################
+
+### Register — client
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Client",
+  "email": "jane.client@example.com",
+  "password": "password12",
+  "password_confirmation": "password12",
+  "role": "client",
+  "phone": "+212600000001",
+  "address": "123 Rue Hassan II, Casablanca",
+  "gender": "female"
+}
+
+### Register — hairdresser (creates linked hairdresser row)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ali Coiffeur",
+  "email": "ali.barber@example.com",
+  "password": "password12",
+  "password_confirmation": "password12",
+  "role": "hairdresser",
+  "phone": "+212600000002",
+  "address": "456 Blvd Zerktouni, Casablanca",
+  "gender": "male"
+}
+
+### Register — admin (use only in dev / seed scenarios)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "password12",
+  "password_confirmation": "password12",
+  "role": "admin"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "jane.client@example.com",
+  "password": "password12"
+}
+{
+  "email": "ali.barber@example.com",
+  "password": "password12"
+}
+
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###############################################################################
+# PUBLIC — hairdressers (no token)
+###############################################################################
+
+### List validated hairdressers only
+GET {{baseUrl}}/hairdressers
+Accept: application/json
+
+### Hairdresser detail (replace 1 with real id)
+GET {{baseUrl}}/hairdressers/1
+Accept: application/json
+
+### Services for a hairdresser
+GET {{baseUrl}}/hairdressers/1/services
+Accept: application/json
+
+### Availabilities for a hairdresser
+GET {{baseUrl}}/hairdressers/1/availabilities
+Accept: application/json
+
+### Reviews for a hairdresser
+GET {{baseUrl}}/hairdressers/1/reviews
+Accept: application/json
+
+###############################################################################
+# HAIRDRESSER profile (token + role hairdresser)
+###############################################################################
+
+### Current hairdresser profile ("me")
+GET {{baseUrl}}/hairdressers/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Update hairdresser profile (id must be yours)
+PUT {{baseUrl}}/hairdressers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "bio": "10 ans d'expérience, spécialiste dégradés et barbe.",
+  "photo": "https://example.com/photos/ali.jpg"
+}
+
+###############################################################################
+# SERVICES (token + role hairdresser)
+###############################################################################
+
+### Create service
+POST {{baseUrl}}/services
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Coupe homme",
+  "price": 120.00,
+  "duration_minutes": 45,
+  "gender_target": "male"
+}
+
+### Update service (replace id)
+PUT {{baseUrl}}/services/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Coupe homme + barbe",
+  "price": 150.00,
+  "duration_minutes": 60,
+  "gender_target": "male"
+}
+
+### Delete service
+DELETE {{baseUrl}}/services/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###############################################################################
+# AVAILABILITIES (token + role hairdresser)
+###############################################################################
+
+### Add weekly slot (times: HH:mm, end after start)
+POST {{baseUrl}}/availabilities
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "day_of_week": "sat",
+  "start_time": "09:00",
+  "end_time": "18:00"
+}
+
+### Delete availability
+DELETE {{baseUrl}}/availabilities/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###############################################################################
+# BOOKINGS (token — client creates; both roles can list "my")
+###############################################################################
+
+### Create booking (client only) — booking_date must be in the future (ISO 8601)
+POST {{baseUrl}}/bookings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "hairdresser_id": 1,
+  "address": "10 Rue des Fleurs, Rabat",
+  "booking_date": "2026-05-10T14:30:00",
+  "service_ids": [1, 2]
+}
+
+### My bookings (client: as client; hairdresser: as pro)
+GET {{baseUrl}}/bookings/my
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Update booking status (hairdresser only, own bookings)
+### Allowed: confirmed, on_way, arrived, in_progress, done, cancelled
+PATCH {{baseUrl}}/bookings/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "confirmed"
+}
+
+### Cancel booking (client only, pending only — sets status cancelled)
+DELETE {{baseUrl}}/bookings/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###############################################################################
+# REVIEWS (token + role client)
+###############################################################################
+
+### Create review
+POST {{baseUrl}}/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "hairdresser_id": 1,
+  "rating": 5,
+  "comment": "Excellent service à domicile, ponctuel et pro."
+}
+
+###############################################################################
+# INVOICES (token)
+###############################################################################
+
+### Download invoice PDF (after booking marked done and invoice exists)
+GET {{baseUrl}}/invoices/1/pdf
+Authorization: Bearer {{token}}
+Accept: application/pdf
+
+###############################################################################
+# ADMIN (token + role admin)
+###############################################################################
+
+### Dashboard stats
+GET {{baseUrl}}/admin/dashboard
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### All hairdressers (including not validated)
+GET {{baseUrl}}/admin/hairdressers
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Validate hairdresser (no body)
+PATCH {{baseUrl}}/admin/hairdressers/1/validate
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### All bookings
+GET {{baseUrl}}/admin/bookings
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### All users
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{token}}
+Accept: application/json
